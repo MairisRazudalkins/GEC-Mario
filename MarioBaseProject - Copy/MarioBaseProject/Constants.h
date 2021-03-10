@@ -1,0 +1,14 @@
+#pragma once
+#define SCREEN_WIDTH 960
+#define SCREEN_HEIGHT 480
+#define EDITOR_SCREEN_HEIGHT 608
+
+#define MAP_HEIGHT 15
+#define MAP_LENGTH 25
+
+#define TILE_SIZE 32
+
+#define GRAVITY_RATE 300.f
+
+#define INITIAL_JUMP_FORCE 750.f
+#define JUMP_FORCE_DECREMENT 700.f

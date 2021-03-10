@@ -1,4 +1,18 @@
 #pragma once
 
-#define SCREEN_WIDTH 512
-#define SCREEN_HEIGHT 416
+#define SCREEN_WIDTH 500
+#define SCREEN_HEIGHT 400
+
+#define MAP_WIDTH 16
+#define MAP_HEIGHT 13
+
+#define TILE_WIDTH 32
+#define TILE_HEIGHT 32
+
+#define GRAVITY_SCALE 300.f
+#define INITIAL_JUMP_FORCE 500.f
+#define JUMP_FORCE_DECREMENT 400.f
+
+#define SHAKE_DURATION 0.25f
+
+#define INJURED_DURATION 2.5f

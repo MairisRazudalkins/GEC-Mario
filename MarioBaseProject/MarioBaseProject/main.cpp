@@ -6,7 +6,8 @@
 #include "Constants.h"
 #include "Commons.h"
 #include "Texture2D.h"
-
+#include "GameScreenManager.h"
+#include "Input.h"
 
 bool InitSDL();
 void CloseSDL();
@@ -14,15 +15,18 @@ bool Update();
 void Render();
 
 SDL_Window* window = nullptr;
-
 SDL_Renderer* renderer = nullptr;
-Texture2D* testTexture = nullptr;
+GameScreenManager* screenManager;
+
+Uint32 oldTime;
 
 int main(int argc, char* args[])
 {
 	if (InitSDL())
 	{
 		bool quit = false;
+		screenManager = new GameScreenManager(renderer, ScreenType::SCREEN_LEVEL1);
+		oldTime = SDL_GetTicks();
 		
 		while (!quit)
 		{
@@ -67,21 +71,14 @@ bool InitSDL()
 		return false;
 	}
 
-	testTexture = new Texture2D(renderer);
-	
-	if (!testTexture->LoadTextureFromFile("Images/TestImg.bmp"))
-	{
-		std::cout << "Failed to find Texture.";
-		return false;
-	}
 	
 	return true;
 }
 
 void CloseSDL()
 {
-	delete testTexture;
-	testTexture = nullptr;
+	delete screenManager;
+	screenManager = nullptr;
 	
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
@@ -95,6 +92,7 @@ void CloseSDL()
 
 bool Update()
 {
+	Uint32 newTime = SDL_GetTicks();
 	SDL_Event event;
 	
 	SDL_PollEvent(&event);
@@ -106,6 +104,10 @@ bool Update()
 		break;
 	}
 
+	Input::GetInst()->Update();
+	screenManager->Update((float)(newTime - oldTime) / 1000.f, event);
+	oldTime = newTime;
+	
 	return false;
 	
 }
@@ -114,8 +116,6 @@ void Render()
 {
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(renderer);
-
-	testTexture->Render(Vector2D(), SDL_FLIP_NONE);
-
+	screenManager->Render();
 	SDL_RenderPresent(renderer);
 }

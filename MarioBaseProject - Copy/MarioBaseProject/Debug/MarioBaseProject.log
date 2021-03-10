@@ -1,0 +1,11 @@
+﻿  GameLevel.cpp
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\BaseLevel.h(6,19): warning C4099: 'SDL_Renderer': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SDL2\SDL\include\SDL_render.h(132): message : see declaration of 'SDL_Renderer'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(4,13): warning C4099: 'Rect2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(34): message : see declaration of 'Rect2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(5,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(19): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SceneObject.h(9,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(5): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\GameLevel.cpp(32,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  MarioBaseProject.vcxproj -> C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\Debug\MarioBaseProject.exe

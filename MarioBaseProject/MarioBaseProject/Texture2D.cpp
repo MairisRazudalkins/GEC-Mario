@@ -28,7 +28,12 @@ void Texture2D::Free()
 void Texture2D::Render(Vector2D pos, SDL_RendererFlip flip, double angle)
 {
 	SDL_Rect renderLoc = { pos.x,pos.y, width, height };
-	SDL_RenderCopyEx(renderer, texture, nullptr, &renderLoc, 0, nullptr, SDL_FLIP_NONE);
+	SDL_RenderCopyEx(renderer, texture, nullptr, &renderLoc, 0, nullptr, flip);
+}
+
+void Texture2D::Render(SDL_Rect sourceRect, SDL_Rect sourceDest, SDL_RendererFlip flip, double angle)
+{
+	SDL_RenderCopyEx(renderer, texture, &sourceRect, &sourceDest, angle, nullptr, flip);
 }
 
 bool Texture2D::LoadTextureFromFile(std::string path)
