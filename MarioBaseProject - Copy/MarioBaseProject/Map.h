@@ -6,6 +6,8 @@
 
 class SceneObject;
 class CharacterMario;
+class Character;
+class Texture2D;
 
 class Map : public GameObject
 {
@@ -13,6 +15,9 @@ class Map : public GameObject
 	std::string backgroundName;
 	Texture2D* backgroundTexture;
 	Texture2D* collisionViewTexture;
+
+	Vector2D startPos;
+	Vector2D endPos;
 	
 	int mapLength;
 	bool isEditing = false;
@@ -36,6 +41,11 @@ public:
 	void SaveMap(std::string mapName);
 	void LoadMap(std::string mapName);
 	
-	static void LoadObject(std::string obj, int xPos, int yPos);
-};
+	Vector2D GetStartPos() { return startPos; }
+	void SetStartPos(Vector2D newStartPos) { startPos = newStartPos; }
 
+	Vector2D GetEndPos() { return endPos; }
+	void SetEndPos(Vector2D newEndPos) { endPos = newEndPos; }
+
+	void LoadCustomTile(CustomPlacementTileType tileType, Vector2D pos, Rect2D srcRect = Rect2D(), int colIndex = 0);
+};

@@ -1,26 +1,34 @@
 #include "ScreenManager.h"
+
+#include <iostream>
+
 #include "BaseLevel.h"
 #include "GameLevel.h"
 #include "LevelEditor.h"
 #include "Texture2D.h"
 #include "Constants.h"
+#include "MainMenu.h"
 
-Vector2D* ScreenManager::cameraPos = new Vector2D(0.f, 0.f);
-BaseLevel* ScreenManager::currentLevel = nullptr;
-SDL_Renderer* ScreenManager::renderer = nullptr;
-Texture2D* ScreenManager::gameTileMap = nullptr;
-SDL_Window* ScreenManager::window = nullptr;
+ScreenManager* ScreenManager::inst = nullptr;
 
 ScreenManager::ScreenManager(SDL_Window* window, SDL_Renderer* renderer, ScreenType screenType)
 {
+	inst = this;
+	cameraPos = new Vector2D(0, 0);
+	
 	this->window = window;
 	this->renderer = renderer;
-	ChangeScreen(screenType);
+	
+	mainMenu = new MainMenu(this);	
+	//ChangeScreen(screenType);
 }
 
 ScreenManager::~ScreenManager()
 {
 	renderer = nullptr;
+
+	delete mainMenu;
+	mainMenu = nullptr;
 
 	delete currentLevel;
 	currentLevel = nullptr;
@@ -31,31 +39,37 @@ ScreenManager::~ScreenManager()
 
 void ScreenManager::Draw()
 {
-	currentLevel->Draw();
+	if (inMainMenu)
+		mainMenu->Draw();
+	else
+		currentLevel->Draw();
 }
 
 void ScreenManager::Update(float deltaTime)
 {
-	currentLevel->Update(deltaTime);
+	if (inMainMenu)
+		mainMenu->Update(deltaTime);
+	else
+		currentLevel->Update(deltaTime);
 }
 
-void ScreenManager::ChangeScreen(ScreenType newScreen)
+void ScreenManager::ChangeScreen(ScreenType newScreen, std::string mapName)
 {
-	BaseLevel* tempLevel;
+	inMainMenu = false;
 	
 	if (currentLevel != nullptr)
 	{
 		delete currentLevel;
+		currentLevel = nullptr;
 	}
-	
-	switch (newScreen)
-	{
-	case SCREEN_LEVEL1:
-		tempLevel = new GameLevel(renderer, "TestMap.txt");
-		currentLevel = (BaseLevel*)tempLevel;
-		tempLevel = nullptr;
-		break;
-	}
+
+
+	if (newScreen == SCREEN_MENU)
+		inMainMenu = true;
+	else if (newScreen == SCREEN_LEVEL)
+		currentLevel = new GameLevel(renderer, mapName);
+	else if (newScreen == SCREEN_EDITOR)
+		currentLevel = new LevelEditor(renderer, mapName);
 }
 
 Texture2D* ScreenManager::GetTileMap()

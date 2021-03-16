@@ -1,11 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <iostream>
-
 #include "Constants.h"
-#include "Commons.h"
-#include "Texture2D.h"
 #include "ScreenManager.h"
 #include "Input.h"
 
@@ -25,13 +20,13 @@ int main(int argc, char* args[])
 	if (InitSDL())
 	{
 		bool quit = false;
-		screenManager = new ScreenManager(window, renderer, ScreenType::SCREEN_LEVEL1);
+		screenManager = new ScreenManager(window, renderer, ScreenType::SCREEN_LEVEL);
 		oldTime = SDL_GetTicks();
 		
 		while (!quit)
 		{
-			Render();
 			quit = Update();
+			Render();
 		}
 	}
 

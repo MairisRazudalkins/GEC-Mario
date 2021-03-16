@@ -145,17 +145,20 @@
     <ClCompile Include="CharacterMario.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionSelector.cpp" />
+    <ClCompile Include="FinishPoint.cpp" />
     <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="BaseLevel.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="PowerUpDropTile.cpp" />
     <ClCompile Include="LevelEditor.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="EditorMenu.cpp" />
     <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UISlider.cpp" />
@@ -173,10 +176,14 @@
     <ClInclude Include="CollisionSelector.h" />
     <ClInclude Include="Commons.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="FinishPoint.h" />
     <ClInclude Include="GameLevel.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="BaseLevel.h" />
+    <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="PowerUpDropTile.h" />
     <ClInclude Include="LevelEditor.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="UIButton.h" />
     <ClInclude Include="UISlider.h" />
@@ -185,7 +192,6 @@
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="Texture2D.h" />
-    <ClInclude Include="Tile.h" />
     <ClInclude Include="EditorMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,5 @@
 #pragma once
 
-class Texture2D;
-
 class GameObject
 {
 public:

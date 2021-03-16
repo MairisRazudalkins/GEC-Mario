@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "Commons.h"
 #include "Collisions.h"
-#include <iostream>
+#include "Texture2D.h"
 
 class Vector2D;
 
@@ -15,6 +15,7 @@ class SceneObject : public GameObject
 	bool isVisible = true;
 
 protected:
+	std::string objTag = "Tile";
 	Texture2D* texture;
 	Rect2D srcRect;
 	Vector2D position;
@@ -33,9 +34,16 @@ public:
 	Vector2D GetPosition() { return position; }
 	Rect2D GetSrcRect() { return srcRect; }
 
-	void SetCollisionType(CollisionType collisionType) { std::cout << collisionType << std::endl; this->collisionType = collisionType; }
+	void SetCollisionType(CollisionType collisionType) { if (this == nullptr) { return; };this->collisionType = collisionType; }
 	CollisionType GetCollisionType() { return collisionType; }
 	
 	void SetVisibility(bool visible) { isVisible = visible; }
 	bool IsVisible() { return isVisible; }
+	
+	Rect2D GetDstRect() { return Rect2D(position.x, position.y, srcRect.width, srcRect.height); }
+	float GetcollisionRadius() { return GetSrcRect().width; }
+
+	std::string GetTag() { return objTag; }
+	
+	virtual void OnObjectHit(SceneObject* other);
 };

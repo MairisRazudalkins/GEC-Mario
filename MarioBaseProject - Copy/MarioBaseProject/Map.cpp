@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "ScreenManager.h"
 #include "Texture2D.h"
+#include "PowerUpDropTile.h"
 
 Map::Map(std::string mapName)
 {
@@ -15,6 +16,10 @@ Map::Map(std::string mapName)
 	{
 		mapLength = SCREEN_WIDTH;
 		backgroundName = "NONE";
+		
+		startPos = Vector2D(0, 0);
+		endPos = Vector2D(TILE_SIZE, 0.f);
+		
 		sceneObjects = new std::vector<std::vector<SceneObject*>>(MAP_HEIGHT, std::vector<SceneObject*>(mapLength / TILE_SIZE));
 		
 		std::cout << "Failed to load map: " << "Data/Maps/" + mapName << "  Loaded empty map instead!\n";
@@ -50,11 +55,12 @@ void Map::Draw()
 	if (backgroundTexture != nullptr)
 		backgroundTexture->DrawToWorld(Rect2D(0, 0, mapLength, sceneObjects->size() * TILE_SIZE), Rect2D(0, 0, mapLength, sceneObjects->size() * TILE_SIZE));
 
-	int camPosX = ((ScreenManager::GetCameraPos().x * TILE_SIZE) / TILE_SIZE) / TILE_SIZE;
+	int xDrawPos = ((ScreenManager::GetInst()->GetCameraPos().x * TILE_SIZE) / TILE_SIZE) / TILE_SIZE;
+	int xMaxDrawPos = ((xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE)) > (mapLength / TILE_SIZE) ? (mapLength / TILE_SIZE) : (xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE);
 	
 	for (int i = 0; i < sceneObjects->size(); i++) // optimize to draw only ones visible in camera view
 	{
-		for (int j = camPosX; j < camPosX + 1 + (SCREEN_WIDTH / TILE_SIZE); j++)
+		for (int j = xDrawPos; j < xMaxDrawPos; j++)
 		{
 			SceneObject* obj = sceneObjects->at(i).at(j);
 			
@@ -71,7 +77,19 @@ void Map::Draw()
 
 void Map::Update(float deltaTime)
 {
-	
+	int xDrawPos = ((ScreenManager::GetInst()->GetCameraPos().x * TILE_SIZE) / TILE_SIZE) / TILE_SIZE;
+	int xMaxDrawPos = ((xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE)) > (mapLength / TILE_SIZE) ? (mapLength / TILE_SIZE) : (xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE);
+
+	for (int i = 0; i < sceneObjects->size(); i++) // optimize to draw only ones visible in camera view
+	{
+		for (int j = xDrawPos; j < xMaxDrawPos; j++)
+		{
+			SceneObject* obj = sceneObjects->at(i).at(j);
+
+			if (obj != nullptr)
+				obj->Update(deltaTime);
+		}
+	}
 }
 
 void Map::SetIsEditing(bool isEditing)
@@ -147,6 +165,9 @@ void Map::SaveMap(std::string mapName)
 
 	myFile << mapLength << std::endl;
 	myFile << backgroundName << std::endl;
+
+	myFile << TILE_START_POS << " " << startPos.x << " " << startPos.y << std::endl;
+	myFile << TILE_END_POS << " " << endPos.x << " " << endPos.y << std::endl;
 	
 	for (int i = 0; i < sceneObjects->size(); i++)
 	{
@@ -171,12 +192,29 @@ void Map::SaveMap(std::string mapName)
 
 void Map::LoadMap(std::string mapName) // this looks discusting
 {
+	int customTileType;
+	Vector2D customTilePos;
+	
 	std::fstream inFile;
 	inFile.open("Data/Maps/" + mapName);
 
+	if (!inFile.is_open())
+	{
+		std::cout << "Failed to load map: Data/Maps" << mapName << std::endl;
+		LoadMap(""); // load empty map
+		return;
+	}
+	
 	inFile >> mapLength;
 	inFile >> backgroundName;
 
+	inFile >> customTileType >> customTilePos.x >> customTilePos.y;
+	LoadCustomTile((CustomPlacementTileType)customTileType, customTilePos);
+
+	inFile >> customTileType >> customTilePos.x >> customTilePos.y;
+	LoadCustomTile((CustomPlacementTileType)customTileType, customTilePos);
+
+	
 	backgroundTexture = new Texture2D();
 	backgroundTexture->LoadTextureFromFile("Images/" + backgroundName);
 	
@@ -205,22 +243,26 @@ void Map::LoadMap(std::string mapName) // this looks discusting
 					continue;
 				
 				if (srcRect == nullptr)
-				{
 					srcRect = new Rect2D(-TILE_SIZE, -TILE_SIZE, TILE_SIZE, TILE_SIZE);
-				}
 				
 				srcRect->x = std::stoi(str);
 				inFile >> srcRect->y;
 				inFile >> colIndex;
 
+				if (srcRect->x == 30 && srcRect->y == 2)
+				{
+					LoadCustomTile(TILE_POWER_UP_DROPPER, Vector2D(j, i), Rect2D(srcRect->x * TILE_SIZE, srcRect->y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+					srcRect = nullptr;
+					continue;
+				}
+				
 				srcRect->x *= TILE_SIZE;
 				srcRect->y *= TILE_SIZE;
-				
 			}
 
 			if (srcRect != nullptr)
 			{
-				ChangeTileAt(j, i, new SceneObject(Vector2D(j * TILE_SIZE, i * TILE_SIZE), *srcRect, ScreenManager::GetTileMap(), (CollisionType)colIndex));
+				ChangeTileAt(j, i, new SceneObject(Vector2D(j * TILE_SIZE, i * TILE_SIZE), *srcRect, ScreenManager::GetInst()->GetTileMap(), (CollisionType)colIndex));
 				srcRect = nullptr;
 			}
 		}
@@ -229,8 +271,19 @@ void Map::LoadMap(std::string mapName) // this looks discusting
 	
 	std::cout << "LOADED: " << "Data/Maps/" << mapName << std::endl;
 }
- 
-void Map::LoadObject(std::string obj, int xPos, int yPos)
+
+void Map::LoadCustomTile(CustomPlacementTileType tileType, Vector2D pos, Rect2D srcRect, int colIndex)
 {
-	
+	switch (tileType)
+	{
+	case TILE_START_POS:
+		startPos = pos;
+		break;
+	case TILE_END_POS:
+		endPos = pos;
+		break;
+	case TILE_POWER_UP_DROPPER:
+		ChangeTileAt(pos.x, pos.y, new PowerUpDropTile(Vector2D(pos.x * TILE_SIZE, pos.y * TILE_SIZE), srcRect, ScreenManager::GetInst()->GetTileMap(), (PowerUpType)colIndex));
+		break;
+	}
 }

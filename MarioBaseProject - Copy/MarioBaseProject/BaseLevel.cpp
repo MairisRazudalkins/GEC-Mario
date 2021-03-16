@@ -1,25 +1,30 @@
 #include <SDL.h>
 #include "BaseLevel.h"
+
+#include <iostream>
+
 #include "Map.h"
 #include "Constants.h"
 
 BaseLevel::BaseLevel(SDL_Renderer* renderer, const std::string& mapName)
 {
 	this->renderer = renderer;
+	currentMapName = mapName;
 	map = new Map(mapName);
 }
 
 BaseLevel::~BaseLevel()
 {
 	renderer = nullptr;
-
+	
 	delete map;
 	map = nullptr;
 }
 
 void BaseLevel::Draw()
 {
-	map->Draw();
+	if (map)
+		map->Draw();
 }
 
 void BaseLevel::Update(float deltaTime)

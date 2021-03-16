@@ -1,13 +1,15 @@
 #pragma once
 #include "BaseLevel.h"
 
-class Character;
+class CharacterMario;
+class FinishPoint;
 
 class GameLevel : public BaseLevel
 {
 	bool SetupLevel() override;
 
-	Character* testCharacter;
+	CharacterMario* characterMario;
+	FinishPoint* finishPoint;
 
 public:
 	GameLevel(SDL_Renderer* renderer, const std::string &mapName);
@@ -15,4 +17,6 @@ public:
 
 	void Draw() override;
 	void Update(float deltaTime) override;
+
+	CharacterMario* GetMario() { return characterMario; }
 };

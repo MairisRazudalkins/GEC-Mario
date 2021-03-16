@@ -15,10 +15,10 @@ bool Input::WasKeyDown(SDL_Scancode scancode)
 {
 	if (GetInst()->keyboardEvent != nullptr)
 	{
-		bool test = GetInst()->previousKeyboardEvent.keysym.scancode == scancode && GetInst()->previousKeyboardEvent.state == SDL_PRESSED;
-		bool testg = GetInst()->keyboardEvent != nullptr ? GetInst()->keyboardEvent->keysym.scancode == scancode : false;
+		bool wasPreviouslyPressed = GetInst()->previousKeyboardEvent.keysym.scancode == scancode && GetInst()->previousKeyboardEvent.state == SDL_PRESSED;
+		bool wasCurrentlyPressed = GetInst()->keyboardEvent != nullptr ? GetInst()->keyboardEvent->keysym.scancode == scancode : false;
 	
-		return !test && testg;
+		return !wasPreviouslyPressed && wasCurrentlyPressed;
 	}
 	
 	return false;

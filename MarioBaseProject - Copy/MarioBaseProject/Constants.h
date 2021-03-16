@@ -8,7 +8,5 @@
 
 #define TILE_SIZE 32
 
-#define GRAVITY_RATE 300.f
-
-#define INITIAL_JUMP_FORCE 750.f
-#define JUMP_FORCE_DECREMENT 700.f
+#define GRAVITY_DECREASE_RATE 0.9f
+#define GRAVITY_MAX_FALL_SPEED 0.15f // most values are in pixels per frame

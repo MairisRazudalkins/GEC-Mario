@@ -16,7 +16,7 @@ UIButton::UIButton(Vector2D position, Rect2D srcRect, Texture2D* texture) : Scen
 
 void UIButton::Draw()
 {
-	texture->DrawToScreen(srcRect, Rect2D(position.x, position.y, srcRect.width, srcRect.height));
+	texture->DrawToScreen(GetSrcRect(), Rect2D(position.x, position.y, GetSrcRect().width, GetSrcRect().height));
 }
 
 void UIButton::Update(float deltaTime)
@@ -26,13 +26,13 @@ void UIButton::Update(float deltaTime)
 	
 	if (Input::IsLeftMouseHeld()) // This is a weird but had to do it to fix an issue.
 	{
-		if (Collisions::GetInst()->Box(Rect2D(mousePos.x, mousePos.y, 0, 0), Rect2D(position.x, position.y, srcRect.width, srcRect.height)))
+		if (Collisions::Box(Rect2D(mousePos.x, mousePos.y, 0, 0), Rect2D(position.x, position.y, GetSrcRect().width, GetSrcRect().height)))
 			OnHeld();
 	}
 	
 	if (Input::IsLeftMouseDown())
 	{
-		if (Collisions::GetInst()->Box(Rect2D(mousePos.x, mousePos.y, 0, 0), Rect2D(position.x, position.y, srcRect.width, srcRect.height)))
+		if (Collisions::Box(Rect2D(mousePos.x, mousePos.y, 0, 0), Rect2D(position.x, position.y, GetSrcRect().width, GetSrcRect().height)))
 			OnPressed();
 	}
 }

@@ -1,12 +1,11 @@
 #include <iostream>
 #include <SDL_image.h>
 #include "Texture2D.h"
-#include "Constants.h"
 #include "ScreenManager.h"
 
 Texture2D::Texture2D()
 {
-	this->renderer = ScreenManager::GetRenderer();
+	this->renderer = ScreenManager::GetInst()->GetRenderer();
 }
 
 Texture2D::~Texture2D()
@@ -29,7 +28,7 @@ void Texture2D::Free()
 
 void Texture2D::DrawToWorld(Vector2D pos, SDL_RendererFlip flip, double angle)
 {
-	Vector2D cameraPos = ScreenManager::GetCameraPos();
+	Vector2D cameraPos = ScreenManager::GetInst()->GetCameraPos();
 	SDL_Rect renderLoc = { pos.x - cameraPos.x, pos.y - cameraPos.y, width, height };
 	
 	SDL_RenderCopyEx(renderer, texture, nullptr, &renderLoc, angle, nullptr, flip);
@@ -37,8 +36,8 @@ void Texture2D::DrawToWorld(Vector2D pos, SDL_RendererFlip flip, double angle)
 
 void Texture2D::DrawToWorld(Rect2D sourceRect, Rect2D sourceDest, SDL_RendererFlip flip, double angle)
 {
-	Vector2D cameraPos = ScreenManager::GetCameraPos();
-	SDL_Rect srcRect = { sourceRect.x,sourceRect.y, sourceRect.width, sourceRect.height };
+	Vector2D cameraPos = ScreenManager::GetInst()->GetCameraPos();
+	SDL_Rect srcRect = { sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height };
 	SDL_Rect dstRect = { sourceDest.x - cameraPos.x, sourceDest.y - cameraPos.y, sourceDest.width, sourceDest.height };
 	
 	SDL_RenderCopyEx(renderer, texture, &srcRect, &dstRect, angle, nullptr, flip);

@@ -12,6 +12,7 @@ class BaseLevel : public GameObject
 protected:
 	SDL_Renderer* renderer;
 	Map* map;
+	std::string currentMapName;
 	
 public:
 	BaseLevel(SDL_Renderer* renderer, const std::string& mapName);

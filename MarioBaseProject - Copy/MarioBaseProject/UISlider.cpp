@@ -23,7 +23,7 @@ UISlider::~UISlider()
 
 void UISlider::Draw()
 {
-	texture->DrawToScreen(srcRect, Rect2D(position.x, position.y, srcRect.width, srcRect.height));
+	texture->DrawToScreen(GetSrcRect(), Rect2D(position.x, position.y, GetSrcRect().width, GetSrcRect().height));
 	sliderButton->Draw();
 }
 
@@ -40,17 +40,17 @@ void UISlider::OnSliderHeld()
 	float mousePosX = Input::GetMousePos().x;
 	Vector2D newPos = Vector2D(mousePosX - sliderButton->GetSrcRect().width / 2, sliderButton->GetPosition().y);
 
-	SDL_WarpMouseInWindow(ScreenManager::GetWindow(), mousePosX, newPos.y + (sliderButton->GetSrcRect().height / 2));
+	SDL_WarpMouseInWindow(ScreenManager::GetInst()->GetWindow(), mousePosX, newPos.y + (sliderButton->GetSrcRect().height / 2));
 	
 	if (newPos.x <= position.x)
 	{
 		newPos.x = position.x;
-		SDL_WarpMouseInWindow(ScreenManager::GetWindow(), newPos.x + sliderButton->GetSrcRect().width / 2, newPos.y + (sliderButton->GetSrcRect().height / 2));
+		SDL_WarpMouseInWindow(ScreenManager::GetInst()->GetWindow(), newPos.x + sliderButton->GetSrcRect().width / 2, newPos.y + (sliderButton->GetSrcRect().height / 2));
 	}
 	else if (newPos.x + sliderButton->GetSrcRect().width >= position.x + GetSrcRect().width)
 	{
 		newPos.x = (position.x + GetSrcRect().width) - sliderButton->GetSrcRect().width;
-		SDL_WarpMouseInWindow(ScreenManager::GetWindow(), newPos.x + sliderButton->GetSrcRect().width / 2, newPos.y + (sliderButton->GetSrcRect().height / 2));
+		SDL_WarpMouseInWindow(ScreenManager::GetInst()->GetWindow(), newPos.x + sliderButton->GetSrcRect().width / 2, newPos.y + (sliderButton->GetSrcRect().height / 2));
 	}
 	
 	sliderButton->SetPosition(newPos);

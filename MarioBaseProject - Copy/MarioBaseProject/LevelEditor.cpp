@@ -8,7 +8,7 @@
 
 LevelEditor::LevelEditor(SDL_Renderer* renderer, const std::string& mapName) : BaseLevel(renderer, mapName)
 {
-	SDL_SetWindowSize(ScreenManager::GetWindow(), SCREEN_WIDTH, EDITOR_SCREEN_HEIGHT);
+	SDL_SetWindowSize(ScreenManager::GetInst()->GetWindow(), SCREEN_WIDTH, EDITOR_SCREEN_HEIGHT);
 
 	map->SetIsEditing(true);
 	tileSelector = new EditorMenu(map);
@@ -39,6 +39,12 @@ void LevelEditor::Draw()
 
 void LevelEditor::Update(float deltaTime)
 {
+	if (Input::WasKeyDown(Key_K))
+	{
+		ScreenManager::GetInst()->ChangeScreen(SCREEN_LEVEL, currentMapName);
+		return;
+	}
+	
 	if (Input::WasKeyDown(Key_T))
 		map->SaveMap("TestMap.txt");
 
@@ -53,20 +59,20 @@ void LevelEditor::Update(float deltaTime)
 	
 	tileSelector->Update(deltaTime);
 
-	Vector2D cameraPos = ScreenManager::GetCameraPos();
+	Vector2D cameraPos = ScreenManager::GetInst()->GetCameraPos();
 
 	if (Input::IsKeyDown(Key_D))
 	{
-		ScreenManager::SetCameraPos(Vector2D(cameraPos.x + TILE_SIZE, 0));
+		ScreenManager::GetInst()->SetCameraPos(Vector2D(cameraPos.x + TILE_SIZE, 0));
 		
 		if (cameraPos.x + SCREEN_WIDTH >= map->GetLength()) // TODO: replace SCREEN_WIDTH * 1.5 with level length when maps done!!
-			ScreenManager::SetCameraPos(Vector2D(map->GetLength() - SCREEN_WIDTH, 0.f));
+			ScreenManager::GetInst()->SetCameraPos(Vector2D(map->GetLength() - SCREEN_WIDTH, 0.f));
 	}
 	else if (Input::IsKeyDown(Key_A))
 	{
-		ScreenManager::SetCameraPos(Vector2D(cameraPos.x - TILE_SIZE, 0));
+		ScreenManager::GetInst()->SetCameraPos(Vector2D(cameraPos.x - TILE_SIZE, 0));
 		
 		if (cameraPos.x <= 0)
-			ScreenManager::SetCameraPos(Vector2D(0.f, 0.f));
+			ScreenManager::GetInst()->SetCameraPos(Vector2D(0.f, 0.f));
 	}
 }

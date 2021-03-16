@@ -1,7 +1,4 @@
 #include "CollisionSelector.h"
-
-#include <iostream>
-
 #include "UIButton.h"
 #include "Texture2D.h"
 #include "Constants.h"
@@ -31,7 +28,7 @@ CollisionSelector::~CollisionSelector()
 
 void CollisionSelector::Draw()
 {
-	texture->DrawToScreen(srcRect, Rect2D(position.x, position.y, cSelectorWidth, TILE_SIZE));
+	texture->DrawToScreen(GetSrcRect(), Rect2D(position.x, position.y, cSelectorWidth, TILE_SIZE));
 	collisionNoneButton->Draw();
 	collisionPlatButton->Draw();
 	collisionBlockButton->Draw();
@@ -55,12 +52,8 @@ void CollisionSelector::BeginChange(SceneObject* obj)
 
 void CollisionSelector::ChangeTileCollision(CollisionType colType)
 {
-	std::cout << "SELECTED: " << colType << std::endl;
-	
 	if (selectedTile != nullptr)
-	{
 		selectedTile->SetCollisionType(colType);
-	}
 	
 	selectedTile = nullptr;
 	SetVisibility(false);
@@ -68,7 +61,7 @@ void CollisionSelector::ChangeTileCollision(CollisionType colType)
 
 void CollisionSelector::OnNoneButtonPressed()
 {
-	ChangeTileCollision(NONE);
+	ChangeTileCollision(CollisionType::NONE);
 }
 
 void CollisionSelector::OnPlatButtonPressed()
