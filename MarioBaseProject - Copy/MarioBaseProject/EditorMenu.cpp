@@ -1,4 +1,7 @@
 #include "EditorMenu.h"
+
+#include "CharacterGoomba.h"
+#include "CharacterKoopa.h"
 #include "Collisions.h"
 #include "Input.h"
 #include "Texture2D.h"
@@ -7,7 +10,8 @@
 #include "ScreenManager.h"
 #include "UIButton.h"
 #include "UISlider.h"
-#include "CollisionSelector.h"
+#include "PowerUpSelector.h"
+#include "PowerUpDropTile.h"
 
 EditorMenu::EditorMenu(Map* map) : SceneObject(Vector2D(0, EDITOR_SCREEN_HEIGHT - (EDITOR_SCREEN_HEIGHT - SCREEN_HEIGHT)), "Images/SpriteSheet.png")
 {
@@ -25,7 +29,7 @@ EditorMenu::EditorMenu(Map* map) : SceneObject(Vector2D(0, EDITOR_SCREEN_HEIGHT 
 	optionsTexture = new Texture2D();
 	optionsTexture->LoadTextureFromFile("Images/UIEditorOptionButtons.png");
 
-	collisionSelector = new CollisionSelector(Vector2D((SCREEN_WIDTH / 2) - CollisionSelector::cSelectorWidth / 2, SCREEN_HEIGHT), "Images/UICollisionButtons.png");
+	powerUpSelector = new PowerUpSelector(Vector2D((SCREEN_WIDTH / 2) - PowerUpSelector::cSelectorWidth / 2, SCREEN_HEIGHT), "Images/UIPowerUpSelector.png");
 	textureSlider = new UISlider(Vector2D(0, position.y + texture->GetHeight() + 8.f), SPRITE_SHEET_DISPLAY_LENGTH);
 	levelSlider = new UISlider(Vector2D((SCREEN_WIDTH / 2) - (600.f / 2), 10.f), 640.f);
 
@@ -33,11 +37,15 @@ EditorMenu::EditorMenu(Map* map) : SceneObject(Vector2D(0, EDITOR_SCREEN_HEIGHT 
 	collisionButton = new UIButton(Vector2D(SPRITE_SHEET_DISPLAY_LENGTH, GetPosition().y + 48.f), Rect2D(0, 48.f, 48.f, 48.f), optionsTexture);
 	startPosButton = new UIButton(Vector2D(SPRITE_SHEET_DISPLAY_LENGTH + 48.f, GetPosition().y), Rect2D(48.f, 0.f, 48.f, 48.f), optionsTexture);
 	endPosButton = new UIButton(Vector2D(SPRITE_SHEET_DISPLAY_LENGTH + 48.f, GetPosition().y + 48.f), Rect2D(48.f, 48.f, 48.f, 48.f), optionsTexture);
+	goombaButton = new UIButton(Vector2D(SPRITE_SHEET_DISPLAY_LENGTH + 96.f, GetPosition().y), Rect2D(96.f, 0.f, 48.f, 48.f), optionsTexture);
+	koopaButton = new UIButton(Vector2D(SPRITE_SHEET_DISPLAY_LENGTH + 96.f, GetPosition().y + 48.f), Rect2D(96.f, 48.f, 48.f, 48.f), optionsTexture);
 
 	deleteButton->onPressedCallback = std::bind(&EditorMenu::OnDeleteButtonPressed , this);
 	collisionButton->onPressedCallback = std::bind(&EditorMenu::OnCollisionButtonPressed, this);
 	startPosButton->onPressedCallback = std::bind(&EditorMenu::OnStartPosButtonPressed, this);
 	endPosButton->onPressedCallback = std::bind(&EditorMenu::OnEndPosButtonPressed, this);
+	goombaButton->onPressedCallback = std::bind(&EditorMenu::OnGoombaButtonPressed, this);
+	koopaButton->onPressedCallback = std::bind(&EditorMenu::OnKoopaButtonPressed, this);
 }
 
 EditorMenu::~EditorMenu()
@@ -53,8 +61,8 @@ EditorMenu::~EditorMenu()
 	delete levelSlider;
 	levelSlider = nullptr;
 
-	delete collisionSelector;
-	collisionSelector = nullptr;
+	delete powerUpSelector;
+	powerUpSelector = nullptr;
 
 	delete deleteButton;
 	deleteButton = nullptr;
@@ -67,13 +75,19 @@ EditorMenu::~EditorMenu()
 
 	delete endPosButton;
 	endPosButton = nullptr;
+	
+	delete goombaButton;
+	startPosButton = nullptr;
+
+	delete koopaButton;
+	endPosButton = nullptr;
 }
 
 void EditorMenu::Update(float deltaTime)
 {
-	if (collisionSelector->IsVisible())
+	if (powerUpSelector->IsVisible())
 	{
-		collisionSelector->Update(deltaTime);
+		powerUpSelector->Update(deltaTime);
 		return;
 	}
 
@@ -84,6 +98,8 @@ void EditorMenu::Update(float deltaTime)
 	collisionButton->Update(deltaTime);
 	startPosButton->Update(deltaTime);
 	endPosButton->Update(deltaTime);
+	goombaButton->Update(deltaTime);
+	koopaButton->Update(deltaTime);
 	
 	Vector2D mousePos = Input::GetMousePos();
 	
@@ -113,21 +129,44 @@ void EditorMenu::Update(float deltaTime)
 	else if (Input::IsRightMouseDown())
 	{
 		Vector2D camPos = ScreenManager::GetInst()->GetCameraPos();
-		collisionSelector->BeginChange(map->GetTileAt((selectorPos.x + camPos.x) / TILE_SIZE, (selectorPos.y + camPos.y) / TILE_SIZE));
+
+		SceneObject* obj = map->GetTileAt((selectorPos.x + camPos.x) / TILE_SIZE, (selectorPos.y + camPos.y) / TILE_SIZE);
+		
+		if (obj != nullptr && obj->GetTag() == "PowerUpTile")
+		{
+			PowerUpDropTile* powerUpTile = (PowerUpDropTile*)obj;
+			powerUpSelector->BeginChange(powerUpTile);
+		}
 	}
 	else if (Input::IsLeftMouseHeld())
 	{
 		if (Collisions::Box(Rect2D(selectorPos.x + 1, selectorPos.y + 1, 0, 0), Rect2D(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)))
 			PlaceTile();
 	}
+
+	Vector2D cameraPos = ScreenManager::GetInst()->GetCameraPos();
+
+	if (Input::IsKeyDown(Key_D))
+	{
+		ScreenManager::GetInst()->SetCameraPos(Vector2D(cameraPos.x + TILE_SIZE, 0));
+
+		if (cameraPos.x + SCREEN_WIDTH >= map->GetLength()) // TODO: replace SCREEN_WIDTH * 1.5 with level length when maps done!!
+			ScreenManager::GetInst()->SetCameraPos(Vector2D(map->GetLength() - SCREEN_WIDTH, 0.f));
+	}
+	else if (Input::IsKeyDown(Key_A))
+	{
+		ScreenManager::GetInst()->SetCameraPos(Vector2D(cameraPos.x - TILE_SIZE, 0));
+
+		if (cameraPos.x <= 0)
+			ScreenManager::GetInst()->SetCameraPos(Vector2D(0.f, 0.f));
+	}
 }
 
 void EditorMenu::Draw()
 {
-	if (collisionSelector->IsVisible())
+	if (powerUpSelector->IsVisible())
 	{
-		collisionSelector->Draw();
-		return;
+		powerUpSelector->Draw();
 	}
 
 	spriteSheetXPos = (int)((texture->GetWidth() - SPRITE_SHEET_DISPLAY_LENGTH) * textureSlider->GetSliderPercent() / TILE_SIZE) * TILE_SIZE;
@@ -154,6 +193,8 @@ void EditorMenu::Draw()
 	collisionButton->Draw();
 	startPosButton->Draw();
 	endPosButton->Draw();
+	goombaButton->Draw();
+	koopaButton->Draw();
 }
 
 void EditorMenu::PlaceTile()
@@ -175,7 +216,11 @@ void EditorMenu::PlaceTile()
 			map->SetStartPos(Vector2D(selectorPos.x + camPos.x, selectorPos.y + camPos.y));
 		else if (customTileType == TILE_END_POS)
 			map->SetEndPos(Vector2D(selectorPos.x + camPos.x, selectorPos.y + camPos.y));
-
+		else if (customTileType == TILE_GOOMBA)
+			map->AddEnemy(new CharacterGoomba(Vector2D(selectorPos.x + camPos.x, selectorPos.y + camPos.y), map, nullptr));
+		else if (customTileType == TILE_KOOPA)
+			map->AddEnemy(new CharacterKoopa(Vector2D(selectorPos.x + camPos.x, selectorPos.y + camPos.y), map, nullptr));
+		
 		return;
 	}
 
@@ -195,7 +240,6 @@ void EditorMenu::PlaceTile()
 
 void EditorMenu::OnDeleteButtonPressed()
 {
-	std::cout << "1";
 	customTileTexture = nullptr;
 	customTileType = TILE_DELETE;
 }
@@ -226,4 +270,18 @@ void EditorMenu::OnEndPosButtonPressed()
 	customTileTexture = optionsTexture;
 	customTileRect = Rect2D(48.f, 96.f, TILE_SIZE, TILE_SIZE);
 	customTileType = TILE_END_POS;
+}
+
+void EditorMenu::OnGoombaButtonPressed()
+{
+	customTileTexture = optionsTexture;
+	customTileRect = Rect2D(48.f, 160.f, TILE_SIZE, TILE_SIZE);
+	customTileType = TILE_GOOMBA;
+}
+
+void EditorMenu::OnKoopaButtonPressed()
+{
+	customTileTexture = optionsTexture;
+	customTileRect = Rect2D(80.f, 96.f, TILE_SIZE, 52.f);
+	customTileType = TILE_KOOPA;
 }

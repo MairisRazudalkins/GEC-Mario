@@ -19,6 +19,7 @@ protected:
 	Texture2D* texture;
 	Rect2D srcRect;
 	Vector2D position;
+	SDL_RendererFlip flip = SDL_RendererFlip::SDL_FLIP_NONE;
 
 public:
 	SceneObject(Vector2D position, std::string path, CollisionType collisionType = CollisionType::NONE);
@@ -44,6 +45,7 @@ public:
 	float GetcollisionRadius() { return GetSrcRect().width; }
 
 	std::string GetTag() { return objTag; }
+	SDL_RendererFlip GetFlip() { return flip; }
 	
 	virtual void OnObjectHit(SceneObject* other);
 };

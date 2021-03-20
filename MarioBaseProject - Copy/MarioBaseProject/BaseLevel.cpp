@@ -1,8 +1,5 @@
 #include <SDL.h>
 #include "BaseLevel.h"
-
-#include <iostream>
-
 #include "Map.h"
 #include "Constants.h"
 
@@ -10,7 +7,6 @@ BaseLevel::BaseLevel(SDL_Renderer* renderer, const std::string& mapName)
 {
 	this->renderer = renderer;
 	currentMapName = mapName;
-	map = new Map(mapName);
 }
 
 BaseLevel::~BaseLevel()
@@ -31,12 +27,17 @@ void BaseLevel::Update(float deltaTime)
 {
 }
 
-bool BaseLevel::SetupLevel()
+void BaseLevel::SetupLevel()
 {
-	return true;
+	map = new Map(currentMapName);
 }
 
 int BaseLevel::GetCurMapLength()
 {
 	return map != nullptr ? map->GetLength() : SCREEN_WIDTH;
+}
+
+bool BaseLevel::GetIsEditor()
+{
+	return map->isEditing;
 }

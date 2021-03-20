@@ -1,43 +1,46 @@
 #include "Character.h"
-
-#include <iostream>
-
 #include "Constants.h"
 #include "Utility.h"
 #include "ScreenManager.h"
 #include "Map.h"
 
-Character::Character(Vector2D position, std::string path, Map* map) : SceneObject(position, path)
+#include <iostream>
+
+Character::Character(Vector2D position, std::string path, Map* map, float movementSpeed, float mass, float accelerationRate) : SceneObject(position, path), movementSpeed(movementSpeed), mass(mass), accelerationRate(accelerationRate)
 {
 	objTag = "Character";
 	this->map = map;
-
-	testTile = new Texture2D();
-	testTile->LoadTextureFromFile("Images/TestTile.png");
 }
 
 Character::~Character()
 {
 	map = nullptr;
-
-	testTile->Free();
 }
 
 void Character::Draw()
 {
-	texture->DrawToWorld(GetSrcRect(), Rect2D(position.x, position.y, srcRect.width, srcRect.height), facingDir == DIR_RIGHT ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);
+	texture->DrawToWorld(GetSrcRect(), Rect2D(position.x, position.y, srcRect.width, srcRect.height), flip);
 }
 
 void Character::Update(float deltaTime)
 {
+	if (!isAlive)
+		return;
+	
+	if (deltaTime == 0.f)
+		deltaTime = 0.001f;
+	
 	if (isMovingRight)
 		MoveRight(deltaTime);
 	else if (isMovingLeft)
 		MoveLeft(deltaTime);
-	else if (isGrounded)
-		Decelerate(deltaTime);
+	else
+		movement = 0.f;
 	
 	ApplyPhysics(deltaTime);
+
+	if (position.y > SCREEN_HEIGHT)
+		KillCharacter();
 }
 
 void Character::KillCharacter()
@@ -48,35 +51,42 @@ void Character::KillCharacter()
 void Character::MoveLeft(float deltaTime)
 {
 	facingDir = DIR_LEFT;
-	movement = Utils::Clamp(movement - (isGrounded ? accelerationRate : airControl) * deltaTime, -1.f, 1.f);
+	flip = SDL_FLIP_HORIZONTAL;
+	movement = -1.f;
 }
 
 void Character::MoveRight(float deltaTime)
 {
 	facingDir = DIR_RIGHT;
-	movement = Utils::Clamp(movement + (isGrounded ? accelerationRate : airControl) * deltaTime, -1.f, 1.f);
+	flip = SDL_FLIP_NONE;
+	movement = 1.f;
 }
 
-void Character::Decelerate(float deltaTime)
+float Character::Decelerate()
 {
-	if (movement > 0.f)
-		movement = Utils::Clamp(movement - (friction * deltaTime), 0.f, movement);
-	else if (movement < 0.f)
-		movement = Utils::Clamp(movement + (friction * deltaTime), movement, 0.f);
+	//acceleration.x - (friction / mass);
+	
+	if (acceleration.x > 0.f)
+		acceleration.x = Utils::Clamp(acceleration.x - (friction / mass), 0.f, acceleration.x);
+	else if (acceleration.x < 0.f)
+		acceleration.x = Utils::Clamp(acceleration.x + (friction / mass), acceleration.x, 0.f);
+
+	return acceleration.x;
 }
 
 void Character::ApplyPhysics(float deltaTime)
 {
-	velocity.x = movement * movementSpeed * deltaTime;
-	
-	if (!isGrounded)
-		velocity.y = (double)Utils::Clamp(velocity.y + (GRAVITY_DECREASE_RATE * deltaTime), velocity.y, GRAVITY_MAX_FALL_SPEED);
+	acceleration.x = Utils::Clamp( movement == 0.f ? Decelerate() :  acceleration.x + ((movement * (isGrounded ? accelerationRate : airControl)) / mass), -1.f, 1.f);
+	acceleration.y = Utils::Clamp(acceleration.y + (GRAVITY_RATE / mass), acceleration.y + (GRAVITY_RATE / mass), GRAVITY_MAX);
+
+	velocity.x = ((acceleration.x / mass) * movementSpeed) * deltaTime;
+	velocity.y = Utils::Clamp(acceleration.y * deltaTime, acceleration.y * deltaTime, GRAVITY_MAX);
 
 	position += velocity;
 	CheckCollision();
 }
 
-void Character::CheckCollision()	
+void Character::CheckCollision()
 {
 	int centerXPos = (int)(position.x + (GetSrcRect().width / 2)) / TILE_SIZE;
 	int centerYPos = (int)(position.y + (GetSrcRect().height / 2)) / TILE_SIZE;
@@ -89,11 +99,11 @@ void Character::CheckCollision()
 	
 	if (objAtHead != nullptr && (objAtHead->GetCollisionType() == BLOCK) && velocity.y < 0.f)
 	{
-		velocity.y = GRAVITY_MAX_FALL_SPEED;
+		acceleration.y = GRAVITY_MAX;
 		objAtHead->OnObjectHit(this);
 	}
 	
-	if (objAtFoot != nullptr && (objAtFoot->GetCollisionType() == BLOCK || (objAtFoot->GetCollisionType() == PLATFORM && velocity.y >= 0.f) ))
+	if (objAtFoot != nullptr && (objAtFoot->GetCollisionType() == BLOCK || (objAtFoot->GetCollisionType() == PLATFORM && acceleration.y >= 0.f) ))
 	{
 		velocity.y = 0.f;
 		position.y = objAtFoot->GetPosition().y - GetSrcRect().height;
@@ -103,18 +113,7 @@ void Character::CheckCollision()
 	if (objAtDir != nullptr && (objAtDir->GetCollisionType() == BLOCK && position.x + srcRect.width >= objAtDir->GetPosition().x))
 	{
 		position.x = facingDir == DIR_RIGHT ? objAtDir->GetPosition().x - GetSrcRect().width : objAtDir->GetPosition().x + GetSrcRect().width;
-		movement = 0.f;
-	}
-	
-	if (position.x <= ScreenManager::GetInst()->GetCameraPos().x)
-	{
-		position.x = ScreenManager::GetInst()->GetCameraPos().x;
-		movement = 0.f;
-	}
-	else if (position.x + srcRect.width >= ScreenManager::GetInst()->GetCurrentMapLength()) // replace with level length
-	{
-		position.x = ScreenManager::GetInst()->GetCurrentMapLength() - srcRect.width;
-		movement = 0.f;
+		acceleration.x = 0.f;
 	}
 }
 
@@ -122,7 +121,7 @@ void Character::Jump()
 {
 	if (isGrounded)
 	{
-		velocity.y = initialJumpVelocity;
+		acceleration.y = initialJumpVelocity;
 		isGrounded = false;
 	}
 }

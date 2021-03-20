@@ -4,10 +4,11 @@
 
 class UIButton : public SceneObject
 {
+	bool shouldDrawToWorld;
 	
 public:
-	UIButton(Vector2D position, std::string path);
-	UIButton(Vector2D position, Rect2D srcRect, Texture2D* texture);
+	UIButton(Vector2D position, std::string path, bool drawToWorld = false);
+	UIButton(Vector2D position, Rect2D srcRect, Texture2D* texture, bool drawToWorld = false);
 	void Draw() override;
 	void Update(float deltaTime) override;
 

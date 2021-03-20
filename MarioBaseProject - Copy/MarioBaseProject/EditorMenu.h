@@ -2,7 +2,7 @@
 #include "SceneObject.h"
 
 class UIButton;
-class CollisionSelector;
+class PowerUpSelector;
 class UISlider;
 class Map;
 
@@ -22,12 +22,14 @@ class EditorMenu : public SceneObject
 	UIButton* collisionButton;
 	UIButton* startPosButton;
 	UIButton* endPosButton;
+	UIButton* goombaButton;
+	UIButton* koopaButton;
 
 	Texture2D* spriteSelector;
 	Rect2D selectedSpriteRect;
 	Vector2D selectorPos;
 
-	CollisionSelector* collisionSelector;
+	PowerUpSelector* powerUpSelector;
 	UISlider* textureSlider;
 	UISlider* levelSlider;
 
@@ -45,4 +47,6 @@ public:
 	void OnCollisionButtonPressed();
 	void OnStartPosButtonPressed();
 	void OnEndPosButtonPressed();
+	void OnGoombaButtonPressed();
+	void OnKoopaButtonPressed();
 };

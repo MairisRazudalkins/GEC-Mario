@@ -7,12 +7,13 @@ class SDL_Renderer;
 
 class BaseLevel : public GameObject
 {
-	virtual bool SetupLevel();
 	
 protected:
+	virtual void SetupLevel();
+	
 	SDL_Renderer* renderer;
-	Map* map;
 	std::string currentMapName;
+	Map* map;
 	
 public:
 	BaseLevel(SDL_Renderer* renderer, const std::string& mapName);
@@ -21,4 +22,5 @@ public:
 	void Draw() override;
 	void Update(float deltaTime) override;
 	int GetCurMapLength();
+	bool GetIsEditor();
 };

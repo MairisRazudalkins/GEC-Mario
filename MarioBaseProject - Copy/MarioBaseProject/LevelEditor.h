@@ -5,7 +5,7 @@ class EditorMenu;
 
 class LevelEditor : public BaseLevel
 {
-	bool SetupLevel() override;
+	void SetupLevel() override;
 	
 	EditorMenu* tileSelector;
 	

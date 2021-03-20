@@ -2,11 +2,17 @@
 #include "SceneObject.h"
 #include "Commons.h"
 
+
+class TextureAnimation;
 class PowerUp;
 
 class PowerUpDropTile : public SceneObject
 {
-	bool playingAnim = false;
+	static Texture2D* editorPowerUpVisual;
+
+	TextureAnimation* tileAnim;
+	
+	bool playingHitAnim = false;
 	bool reverse = false;
 	bool wasHit = false;
 
@@ -17,6 +23,8 @@ class PowerUpDropTile : public SceneObject
 	const float maxYOffset = 0.5f;
 	const Vector2D startPos;
 	
+	static Texture2D* GetPowerUpVisual();
+	
 public:
 	PowerUpDropTile(Vector2D position, Rect2D srcRect, Texture2D* texture, PowerUpType powerUpType);
 	~PowerUpDropTile();
@@ -26,4 +34,7 @@ public:
 	void OnObjectHit(SceneObject* other) override;
 	void SpawnPowerUp();
 	void OnPickUpCollected();
+
+	PowerUpType GetPowerType() { return powerUpType; }
+	void ChangePowerUp(PowerUpType powerUpType);
 };

@@ -6,42 +6,45 @@ class Map;
 
 class Character : public SceneObject
 {
-	FacingDirection facingDir = DIR_RIGHT;
-	Map* map;
-
-	Texture2D* testTile;
+	void MoveLeft(float deltaTime);
+	void MoveRight(float deltaTime);
+	float Decelerate();
 	
 protected:
 	virtual void ApplyPhysics(float deltaTime);
 	virtual void CheckCollision();
-	void MoveLeft(float deltaTime);
-	void MoveRight(float deltaTime);
-	void Decelerate(float deltaTime);
-	void Jump();
+	virtual void Jump();
+
+	Map* map;
 	
-	const float movementSpeed = 325.f;
-	const float accelerationRate = 5.f;
-	const float airControl = 3.f;
-	const float friction = 3.f;
-	
-	const float initialJumpVelocity = -0.225f;
+	FacingDirection facingDir = DIR_RIGHT;
+	Vector2D acceleration;
+	Vector2D velocity;
 
 	float movement = 0.f;
+	float movementSpeed = 75.f;
+	
+	const float mass = 1.f;
+	const float airControl = 0.0015f;
+	const float accelerationRate = 0.0007f;
+	const float friction = 0.0008f;
+	const float initialJumpVelocity = -275.f;
 
 	bool isGrounded = false;
 	bool isMovingRight = false;
 	bool isMovingLeft = false;
 	bool isAlive = true;
 
-	Vector2D velocity;
-
 public:
-	Character(Vector2D position, std::string path, Map* map);
+	Character(Vector2D position, std::string path, Map* map, float movementSpeed = 75.f, float mass = 1.f, float accelerationRate = 0.0007f);
 	~Character();
 	
 	void Draw() override;
 	void Update(float deltaTime) override;
 
 	void KillCharacter();
+	bool IsGrounded() { return isGrounded; }
+	bool IsFalling() { return velocity.y > 0.f; }
+	bool IsAlive() { return isAlive; }
 };
 

@@ -1,12 +1,11 @@
-﻿  PowerUp.cpp
+﻿  FinishPoint.cpp
 C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(4,13): warning C4099: 'Rect2D': type name first seen using 'struct' now seen using 'class'
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(48): message : see declaration of 'Rect2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(50): message : see declaration of 'Rect2D'
 C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(5,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(33): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Commons.h(35): message : see declaration of 'Vector2D'
 C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SceneObject.h(9,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
 C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\Collisions.h(5): message : see declaration of 'Vector2D'
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SceneObject.h(44,50): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\BaseLevel.h(6,19): warning C4099: 'SDL_Renderer': type name first seen using 'struct' now seen using 'class'
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SDL2\SDL\include\SDL_render.h(132): message : see declaration of 'SDL_Renderer'
-C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\PowerUp.cpp(15,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SceneObject.h(45,50): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SDL2\SDL\mixer_include\SDL_mixer.h(113,26): warning C4099: 'Mix_Chunk': type name first seen using 'class' now seen using 'struct'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\MarioBaseProject\SDL2\SDL\mixer_include\SDL_mixer.h(113): message : see declaration of 'Mix_Chunk'
   MarioBaseProject.vcxproj -> C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject - Copy\Debug\MarioBaseProject.exe

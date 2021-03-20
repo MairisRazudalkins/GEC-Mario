@@ -1,9 +1,11 @@
 #include "FinishPoint.h"
 #include "CharacterMario.h"
+#include "ScreenManager.h"
 
-FinishPoint::FinishPoint(Vector2D position, std::string path, CharacterMario* player) : SceneObject(position, path)
+FinishPoint::FinishPoint(Vector2D position, CharacterMario* player) : SceneObject(position, "Images/FinishTile.png")
 {
 	this->player = player;
+	levelCompleteSound = AudioManager::LoadClip("LevelCleared.wav");
 }
 
 FinishPoint::~FinishPoint()
@@ -18,11 +20,22 @@ void FinishPoint::Draw()
 
 void FinishPoint::Update(float deltaTime)
 {
-	if (Collisions::Box(GetSrcRect(), player->GetDstRect()))
-		OnInteractWithPlayer();
-}
+	if (isFinished)
+	{
+		if (!Mix_Playing(levelCompleteSound->allocated))
+		{
+			Mix_HaltMusic();
+			AudioManager::PlayClip(levelCompleteSound);
+		}
+		
+		finishTimer += deltaTime;
 
-void FinishPoint::OnInteractWithPlayer()
-{
-	//complete level
+		if (finishTimer > 3.f)
+			ScreenManager::GetInst()->ChangeScreen(ScreenType::SCREEN_MENU);
+	}
+	else if (Collisions::Box(player->GetDstRect(), GetDstRect()))
+	{
+		player->OnLevelComplete();
+		isFinished = true;
+	}
 }

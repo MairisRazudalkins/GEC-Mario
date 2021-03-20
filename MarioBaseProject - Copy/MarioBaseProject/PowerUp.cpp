@@ -5,11 +5,15 @@
 #include "ScreenManager.h"
 #include "GameLevel.h"
 #include "PowerUpDropTile.h"
+#include "AudioManager.h"
 
 PowerUp::PowerUp(Vector2D position, std::string path, PowerUpType powerUpType, PowerUpDropTile* owner) : SceneObject(position, path), startPos(position)
 {
 	this->powerUpType = powerUpType;
 	this->owner = owner;
+
+	powerUpReveal = AudioManager::LoadClip("ShroomAppear.wav");
+	AudioManager::PlayClip(powerUpReveal);
 
 	if (powerUpType != POWER_UP_NONE)
 		SetSrcRect(Rect2D((int)powerUpType * TILE_SIZE, 0.f, TILE_SIZE, TILE_SIZE));
@@ -17,6 +21,8 @@ PowerUp::PowerUp(Vector2D position, std::string path, PowerUpType powerUpType, P
 
 PowerUp::~PowerUp()
 {
+	Mix_FreeChunk(powerUpReveal);
+	
 	owner = nullptr;
 }
 

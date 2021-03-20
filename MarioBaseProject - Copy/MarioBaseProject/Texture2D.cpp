@@ -70,9 +70,7 @@ bool Texture2D::LoadTextureFromFile(std::string path)
 		texture = SDL_CreateTextureFromSurface(renderer, newSurface);
 
 		if (texture == nullptr)
-		{
 			std::cout << "Unable to create texture from surface. Error: " << SDL_GetError();
-		}
 
 		width = newSurface->w;
 		height = newSurface->h;

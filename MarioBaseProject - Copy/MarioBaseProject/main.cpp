@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include "Constants.h"
 #include "ScreenManager.h"
 #include "Input.h"
@@ -8,6 +9,8 @@ bool InitSDL();
 void CloseSDL();
 bool Update();
 void Render();
+
+void LoadMusic(std::string path);
 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -22,7 +25,7 @@ int main(int argc, char* args[])
 		bool quit = false;
 		screenManager = new ScreenManager(window, renderer, ScreenType::SCREEN_LEVEL);
 		oldTime = SDL_GetTicks();
-		
+
 		while (!quit)
 		{
 			quit = Update();
@@ -58,6 +61,7 @@ bool InitSDL()
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
 	int imageFlags = IMG_INIT_PNG;
 	
 	if (!(IMG_Init(imageFlags)& imageFlags))
@@ -66,6 +70,11 @@ bool InitSDL()
 		return false;
 	}
 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		std::cout << "Mixer didnt load\n";
+		return false;
+	}
 	
 	return true;
 }

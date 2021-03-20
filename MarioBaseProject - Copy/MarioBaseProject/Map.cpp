@@ -1,43 +1,60 @@
 #include <iostream>
 #include <fstream>
 #include "Map.h"
+#include "CharacterGoomba.h"
+#include "CharacterKoopa.h"
 #include "SceneObject.h"
 #include "Constants.h"
 #include "ScreenManager.h"
 #include "Texture2D.h"
 #include "PowerUpDropTile.h"
+#include "CharacterMario.h"
+#include "FinishPoint.h"
 
-Map::Map(std::string mapName)
+Map::Map(std::string mapName, bool isEditing) : levelName(mapName), isEditing(isEditing)
 {
 	std::fstream inFile;
 	inFile.open("Data/Maps/" + mapName);
 
+	collisionViewTexture = new Texture2D();
+	collisionViewTexture->LoadTextureFromFile("Images/UICollisionType.png");
+	
 	if (!inFile.is_open())
 	{
 		mapLength = SCREEN_WIDTH;
-		backgroundName = "NONE";
+		backgroundName = "None";
 		
 		startPos = Vector2D(0, 0);
 		endPos = Vector2D(TILE_SIZE, 0.f);
-		
+
+		mario = new CharacterMario(startPos, this);
+		finishPoint = new FinishPoint(endPos, mario);
 		sceneObjects = new std::vector<std::vector<SceneObject*>>(MAP_HEIGHT, std::vector<SceneObject*>(mapLength / TILE_SIZE));
 		
 		std::cout << "Failed to load map: " << "Data/Maps/" + mapName << "  Loaded empty map instead!\n";
 		return;
 	}
-
+	
 	LoadMap(mapName);
+
+	if (!isEditing)
+	{
+		levelMusic = AudioManager::LoadMusic("Mario.mp3");
+		AudioManager::PlayMusic(levelMusic);
+	}
+	
 	inFile.close();
 }
 
 Map::~Map()
 {
-	if (collisionViewTexture)
-	{
-		delete collisionViewTexture;
-	}
+	Mix_FreeMusic(levelMusic);
+
+	delete collisionViewTexture;
+	collisionViewTexture = nullptr;
 	
 	delete backgroundTexture;
+	backgroundTexture = nullptr;
 	
 	for (int i = 0; i < sceneObjects->size(); i++)
 	{
@@ -48,6 +65,18 @@ Map::~Map()
 	}
 
 	sceneObjects->erase(sceneObjects->begin());
+
+	for (int i = 0; i < enemies->size(); i++)
+		delete enemies->at(i);
+
+	enemies->erase(enemies->begin(), enemies->end());
+
+	delete mario;
+	mario = nullptr;
+
+	delete finishPoint;
+	finishPoint = nullptr;
+
 }
 
 void Map::Draw()
@@ -73,10 +102,33 @@ void Map::Draw()
 			}
 		}
 	}
+
+	for (int i = 0; i < enemies->size(); i++)
+	{
+		Character* enemy = enemies->at(i);
+
+		if (enemy != nullptr)
+		{
+			float xPos = enemy->GetPosition().x;
+
+			if (xPos + enemy->GetSrcRect().width > xDrawPos * TILE_SIZE && xPos < xMaxDrawPos * TILE_SIZE)
+				enemy->Draw();
+		}
+	}
+
+	if (!isEditing)
+	{
+		finishPoint->Draw();
+		mario->Draw();
+	}
+
 }
 
 void Map::Update(float deltaTime)
 {
+	if (isEditing)
+		return;
+	
 	int xDrawPos = ((ScreenManager::GetInst()->GetCameraPos().x * TILE_SIZE) / TILE_SIZE) / TILE_SIZE;
 	int xMaxDrawPos = ((xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE)) > (mapLength / TILE_SIZE) ? (mapLength / TILE_SIZE) : (xDrawPos + 1) + (SCREEN_WIDTH / TILE_SIZE);
 
@@ -90,23 +142,34 @@ void Map::Update(float deltaTime)
 				obj->Update(deltaTime);
 		}
 	}
-}
 
-void Map::SetIsEditing(bool isEditing)
-{
-	this->isEditing = isEditing;
-
-	if (isEditing && !collisionViewTexture)
+	if (mario->IsAlive())
 	{
-		collisionViewTexture = new Texture2D();
-		collisionViewTexture->LoadTextureFromFile("Images/UICollisionType.png");
+		for (int i = 0; i < enemies->size(); i++)
+		{
+			Character* enemy = enemies->at(i);
+
+			if (enemy != nullptr)
+			{
+				float xPos = enemy->GetPosition().x;
+
+				if (xPos + enemy->GetSrcRect().width > xDrawPos * TILE_SIZE && xPos < xMaxDrawPos * TILE_SIZE)
+					enemy->Update(deltaTime);
+			}
+		}
+	}
+	
+	if (!isEditing)
+	{
+		finishPoint->Update(deltaTime);
+
+		if (ScreenManager::GetInst()->GetCurrentLevel() != nullptr)
+			mario->Update(deltaTime);
 	}
 }
 
 void Map::ChangeLength(int newLength)
 {
-	//add check to see if in level editor!
-	
 	if (newLength < mapLength && newLength > SCREEN_WIDTH)
 	{
 		int numOfTiles = newLength / TILE_SIZE;
@@ -180,14 +243,29 @@ void Map::SaveMap(std::string mapName)
 			}
 			
 			Rect2D objSrcRect = sceneObjects->at(i).at(j)->GetSrcRect();
-			
-			myFile << objSrcRect.x / TILE_SIZE << " " << objSrcRect.y / TILE_SIZE <<  " " << sceneObjects->at(i).at(j)->GetCollisionType() << " | ";
+
+			if (objSrcRect.x / TILE_SIZE == 30 && objSrcRect.y / TILE_SIZE == 2)
+				myFile << objSrcRect.x / TILE_SIZE << " " << objSrcRect.y / TILE_SIZE << " " << ((PowerUpDropTile*)sceneObjects->at(i).at(j))->GetPowerType() << " | ";
+			else
+				myFile << objSrcRect.x / TILE_SIZE << " " << objSrcRect.y / TILE_SIZE <<  " " << sceneObjects->at(i).at(j)->GetCollisionType() << " | ";
 		}
 
 		myFile << std::endl;
 	}
 
-	myFile.close();
+	myFile << std::endl;
+	myFile << enemies->size();
+	myFile << std::endl;
+	
+	for (int i = 0; i < enemies->size(); i++)
+	{
+		Character* enemy = enemies->at(i);
+
+		CustomPlacementTileType tileType = enemy->GetTag() == "E Koopa" ? TILE_KOOPA : TILE_GOOMBA;
+		myFile << enemy->GetPosition().x / TILE_SIZE << " " << enemy->GetPosition().y / TILE_SIZE << " " << (int)tileType << " | ";
+	}
+
+	myFile.close();	
 }
 
 void Map::LoadMap(std::string mapName) // this looks discusting
@@ -213,7 +291,6 @@ void Map::LoadMap(std::string mapName) // this looks discusting
 
 	inFile >> customTileType >> customTilePos.x >> customTilePos.y;
 	LoadCustomTile((CustomPlacementTileType)customTileType, customTilePos);
-
 	
 	backgroundTexture = new Texture2D();
 	backgroundTexture->LoadTextureFromFile("Images/" + backgroundName);
@@ -251,7 +328,7 @@ void Map::LoadMap(std::string mapName) // this looks discusting
 
 				if (srcRect->x == 30 && srcRect->y == 2)
 				{
-					LoadCustomTile(TILE_POWER_UP_DROPPER, Vector2D(j, i), Rect2D(srcRect->x * TILE_SIZE, srcRect->y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+					LoadCustomTile(TILE_POWER_UP_DROPPER, Vector2D(j, i), Rect2D(srcRect->x * TILE_SIZE, srcRect->y * TILE_SIZE, TILE_SIZE, TILE_SIZE), colIndex);
 					srcRect = nullptr;
 					continue;
 				}
@@ -267,23 +344,80 @@ void Map::LoadMap(std::string mapName) // this looks discusting
 			}
 		}
 	}
+
+	int numOfEnemies;
+	inFile >> numOfEnemies;
+	
+	enemies = new std::vector<Character*>(numOfEnemies);
+	
+	for (int i = 0; i < numOfEnemies; i++)
+	{
+		Vector2D position;
+		CustomPlacementTileType customTile;
+		std::string str;
+		
+		while (true)
+		{
+			inFile >> str;
+			
+			if (str == "|")
+				break;
+	
+			int tileType;
+			position.x = std::stof(str);
+			inFile >> position.y;
+			inFile >> tileType;
+	
+			customTile = (CustomPlacementTileType)tileType;
+		}
+	
+		LoadCustomTile(customTile, position, Rect2D(), 0, i);
+	}
+	
 	inFile.close();
 	
 	std::cout << "LOADED: " << "Data/Maps/" << mapName << std::endl;
 }
 
-void Map::LoadCustomTile(CustomPlacementTileType tileType, Vector2D pos, Rect2D srcRect, int colIndex)
+void Map::LoadCustomTile(CustomPlacementTileType tileType, Vector2D pos, Rect2D srcRect, int colIndex, int index)
 {
 	switch (tileType)
 	{
 	case TILE_START_POS:
 		startPos = pos;
+		mario = new CharacterMario(startPos, this);
 		break;
 	case TILE_END_POS:
 		endPos = pos;
+		finishPoint = new FinishPoint(endPos, mario);
 		break;
 	case TILE_POWER_UP_DROPPER:
 		ChangeTileAt(pos.x, pos.y, new PowerUpDropTile(Vector2D(pos.x * TILE_SIZE, pos.y * TILE_SIZE), srcRect, ScreenManager::GetInst()->GetTileMap(), (PowerUpType)colIndex));
 		break;
+	case TILE_GOOMBA:
+		enemies->at(index) = new CharacterGoomba(Vector2D(pos.x * TILE_SIZE, pos.y * TILE_SIZE), this, mario);
+		break;
+	case TILE_KOOPA:
+		enemies->at(index) = new CharacterKoopa(Vector2D(pos.x * TILE_SIZE, pos.y * TILE_SIZE), this, mario);
+		break;
 	}
+}
+
+void Map::AddEnemy(Character* enemy)
+{
+	for (int i = 0; i < enemies->size(); i++)
+	{
+		if (enemies->at(i) != nullptr)
+		{
+			if (enemies->at(i)->GetPosition().x == enemy->GetPosition().x && enemies->at(i)->GetPosition().y == enemy->GetPosition().y)
+			{
+				delete enemies->at(i);
+
+				enemies->at(i) = enemy;
+				return;
+			}
+		}
+	}
+	
+	enemies->push_back(enemy);
 }

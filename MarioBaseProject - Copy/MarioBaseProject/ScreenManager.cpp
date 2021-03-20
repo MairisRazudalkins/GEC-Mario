@@ -1,7 +1,4 @@
 #include "ScreenManager.h"
-
-#include <iostream>
-
 #include "BaseLevel.h"
 #include "GameLevel.h"
 #include "LevelEditor.h"
@@ -40,8 +37,8 @@ ScreenManager::~ScreenManager()
 void ScreenManager::Draw()
 {
 	if (inMainMenu)
-		mainMenu->Draw();
-	else
+		mainMenu->Draw();	
+	else if (currentLevel != nullptr)
 		currentLevel->Draw();
 }
 
@@ -49,7 +46,7 @@ void ScreenManager::Update(float deltaTime)
 {
 	if (inMainMenu)
 		mainMenu->Update(deltaTime);
-	else
+	else if(currentLevel != nullptr)
 		currentLevel->Update(deltaTime);
 }
 
@@ -63,13 +60,12 @@ void ScreenManager::ChangeScreen(ScreenType newScreen, std::string mapName)
 		currentLevel = nullptr;
 	}
 
-
 	if (newScreen == SCREEN_MENU)
 		inMainMenu = true;
 	else if (newScreen == SCREEN_LEVEL)
-		currentLevel = new GameLevel(renderer, mapName);
+		currentLevel = (BaseLevel*)(new GameLevel(renderer, mapName));
 	else if (newScreen == SCREEN_EDITOR)
-		currentLevel = new LevelEditor(renderer, mapName);
+		currentLevel = (BaseLevel*)(new LevelEditor(renderer, mapName));
 }
 
 Texture2D* ScreenManager::GetTileMap()

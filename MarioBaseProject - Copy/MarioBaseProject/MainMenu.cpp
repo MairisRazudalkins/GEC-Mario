@@ -23,7 +23,7 @@ void MainMenu::Update(float deltaTime)
 		isPlaySelected = false;
 
 	if (Input::WasKeyDown(Key_E))
-		screenManager->ChangeScreen(isPlaySelected ? SCREEN_LEVEL : SCREEN_EDITOR, "TestMap.txt");
+		screenManager->ChangeScreen(isPlaySelected ? SCREEN_LEVEL : SCREEN_EDITOR, "Level1.txt");
 }
 
 void MainMenu::Draw()

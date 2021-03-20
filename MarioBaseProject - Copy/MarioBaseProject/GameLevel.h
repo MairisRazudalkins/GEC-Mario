@@ -2,15 +2,11 @@
 #include "BaseLevel.h"
 
 class CharacterMario;
-class FinishPoint;
 
 class GameLevel : public BaseLevel
 {
-	bool SetupLevel() override;
-
-	CharacterMario* characterMario;
-	FinishPoint* finishPoint;
-
+	void SetupLevel() override;
+	
 public:
 	GameLevel(SDL_Renderer* renderer, const std::string &mapName);
 	~GameLevel();
@@ -18,5 +14,5 @@ public:
 	void Draw() override;
 	void Update(float deltaTime) override;
 
-	CharacterMario* GetMario() { return characterMario; }
+	CharacterMario* GetMario();
 };

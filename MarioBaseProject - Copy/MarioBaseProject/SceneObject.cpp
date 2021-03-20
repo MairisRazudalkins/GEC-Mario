@@ -34,7 +34,7 @@ SceneObject::~SceneObject()
 
 void SceneObject::Draw()
 {
-	texture->DrawToWorld(srcRect, Rect2D(position.x, position.y, TILE_SIZE, TILE_SIZE));
+	texture->DrawToWorld(srcRect, Rect2D(position.x, position.y, TILE_SIZE, TILE_SIZE), flip);
 }
 
 void SceneObject::Update(float deltaTime)
