@@ -1,0 +1,35 @@
+﻿  EditorMenu.cpp
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Collisions.h(4,13): warning C4099: 'Rect2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Commons.h(50): message : see declaration of 'Rect2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Collisions.h(5,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Commons.h(35): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\SceneObject.h(9,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Collisions.h(5): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\SceneObject.h(45,50): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\Input.h(5,15): warning C4099: 'Vector2D': type name first seen using 'struct' now seen using 'class'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\SceneObject.h(9): message : see declaration of 'Vector2D'
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(38,105): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(38,99): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(39,118): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(39,112): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(40,119): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(40,113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(41,125): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(41,119): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(42,117): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(42,111): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(43,124): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(43,118): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(108,48): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(109,48): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(113,17): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(133,104): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(133,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(154,69): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(174,127): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(207,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(207,57): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(260,84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(260,78): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\MarioBaseProject\EditorMenu.cpp(287,49): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  MarioBaseProject.vcxproj -> C:\Users\mairis\OneDrive - Staffordshire University\GEC\Mario\GEC_Mario\MarioBaseProject\Debug\MarioBaseProject.exe
