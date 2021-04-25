@@ -6,7 +6,7 @@ class PowerUpSelector;
 class UISlider;
 class Map;
 
-#define SPRITE_SHEET_DISPLAY_LENGTH 576
+#define SPRITE_SHEET_DISPLAY_LENGTH 816
 
 class EditorMenu : public SceneObject
 {
